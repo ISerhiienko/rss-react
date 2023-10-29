@@ -4,6 +4,7 @@ import './App.css';
 
 import SearchBar from './components/SearchBar';
 import SearchResult from './components/SearchResult';
+import ErrorBoundary from './components/ErrorBoundary';
 
 interface AppState {
   searchResults: {
@@ -46,6 +47,10 @@ class App extends Component<object, AppState> {
     }
   };
 
+  testError = () => {
+    throw new Error('This is a test error.');
+  };
+
   fetchSearchResults = (searchTerm: string) => {
     this.setState({ loading: true });
     fetch(`https://swapi.dev/api/people/?search=${searchTerm}&page=1`)
@@ -82,7 +87,14 @@ class App extends Component<object, AppState> {
       <div className="container">
         <h1>Search StarWars People</h1>
         <SearchBar onSearch={this.handleSearch} />
-        <SearchResult results={searchResults} error={error} loading={loading} />
+        <ErrorBoundary>
+          <SearchResult
+            results={searchResults}
+            error={error}
+            loading={loading}
+          />
+          <button onClick={this.testError}>Test Error</button>
+        </ErrorBoundary>
       </div>
     );
   }
